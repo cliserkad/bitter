@@ -28,8 +28,6 @@ public class KdlSyntaxScheme extends SyntaxScheme {
             case LONG:
             case DOUBLE:
             case STRING:
-                color = Color.CYAN;
-                break;
             case TYPE:
             case CONST:
             case MAIN:
@@ -45,13 +43,15 @@ public class KdlSyntaxScheme extends SyntaxScheme {
             case THIS:
             case TRUE:
             case FALSE:
-                color = Color.ORANGE;
+                color = new Color(139, 233, 253);
                 break;
             case COMMENT:
-                color = Color.GREEN;
+            case COMMENT_TEXT:
+                color = new Color(80, 250, 123);
                 break;
             case STRING_LIT:
-                color = Color.MAGENTA;
+            case QUOTE:
+                color = new Color(189, 147, 249);
                 break;
             default:
                 color = Color.WHITE;

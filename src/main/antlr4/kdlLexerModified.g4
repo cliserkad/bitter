@@ -3,16 +3,9 @@ lexer grammar kdlLexerModified;
 @header {
 	package com.xarql.kdl.antlr;
 }
-channels {
-	EXTRA
-}
-
-// skip over comments in lexer
-COMMENT: '//' .*? '\n' -> channel(EXTRA);
-BLOCK_COMMENT: '/*' .*? '*/' -> channel(EXTRA);
 
 // skip over whitespace
-WS: [ \t\r\n]+ -> channel(EXTRA);
+WS: [ \t\r\n];
 
 // quotes
 QUOTE: '"';
@@ -106,6 +99,12 @@ FRACTION: NUMBER DOT NUMBER;
 
 
 // match anything that is unmatched and has no syntax characters
-IDENTIFIER: ~([0123456789\r\t\n &|+<>=?!*.~:;,(){}'"/%]|'['|']') ~([\r\t\n &|+<>=?!*.~:;,(){}'"/%]|'['|']')*;
+IDENTIFIER: ~([0123456789\r\t\n &|+<>=?!*.~:;,(){}'"/\\%$#]|'['|']') ~([\r\t\n &|+<>=?!*.~:;,(){}'"/\\%$#]|'['|']')*;
 
-UNMATCHED: . -> channel(EXTRA);
+UNMATCHED: .+?;
+
+// COMMENT: '//' .*? '\n';
+COMMENT: '//' -> mode(COMMENT_MODE), more;
+// BLOCK_COMMENT: '/*' .*? '*/';
+mode COMMENT_MODE;
+COMMENT_TEXT: ~'\n'* '\n'? -> mode(DEFAULT_MODE);

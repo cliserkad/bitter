@@ -14,6 +14,10 @@ import java.awt.*;
  *
  */
 public class Bitter extends JFrame {
+    public static final Color BACKGROUND_COLOR = new Color(40, 42, 54);
+    public static final Color FOREGROUND_COLOR = new Color(248, 248, 242);
+    public static final Color CURRENT_LINE_COLOR = new Color(68, 71, 90);
+    public static final Color SELECTION_COLOR = CURRENT_LINE_COLOR;
 
     public static void main( String[] args ) {
         // Start all Swing applications on the EDT.
@@ -34,6 +38,7 @@ public class Bitter extends JFrame {
 
         PrintStreamArea printStreamArea = new PrintStreamArea();
         System.setOut(printStreamArea.getPrintStream());
+        System.setErr(printStreamArea.getPrintStream());
         JScrollPane logScrollArea = new JScrollPane(printStreamArea.area());
         JPanel logPanel = new JPanel(new BorderLayout());
         logPanel.add(logScrollArea);
@@ -52,8 +57,9 @@ public class Bitter extends JFrame {
         atmf.putMapping("text/kdl", "com.xarql.bitter.KdlTokenMaker");
         textArea.setSyntaxEditingStyle("text/kdl");
 
-        textArea.setBackground(Color.DARK_GRAY);
-        textArea.setCurrentLineHighlightColor(Color.GRAY);
+        textArea.setBackground(BACKGROUND_COLOR);
+        textArea.setCurrentLineHighlightColor(CURRENT_LINE_COLOR);
+        textArea.setSelectionColor(SELECTION_COLOR);
     }
 
 }

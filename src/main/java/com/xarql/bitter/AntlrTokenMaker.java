@@ -22,18 +22,11 @@ public abstract class AntlrTokenMaker extends TokenMakerBase {
                     text.offset + firstToken.getStartIndex(),
                     text.offset + firstToken.getStartIndex() + firstToken.getText().length() - 1,
                     offset + firstToken.getStartIndex(),
-                    tokenType(firstToken),
+                    firstToken.getType(),
                     0);
             token.setNextToken(toList(text, offset, tokens.subList(1, tokens.size())));
             return token;
         }
-    }
-
-    public int tokenType(org.antlr.v4.runtime.Token t) {
-        if(t.getChannel() == kdlLexerModified.EXTRA)
-            return kdlLexerModified.STRING_LIT;
-        else
-            return t.getType();
     }
 
     @Override
