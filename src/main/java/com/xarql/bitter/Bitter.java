@@ -60,6 +60,8 @@ public class Bitter extends JFrame {
         textArea.setBackground(BACKGROUND_COLOR);
         textArea.setCurrentLineHighlightColor(CURRENT_LINE_COLOR);
         textArea.setSelectionColor(SELECTION_COLOR);
+        textArea.setTabSize(2);
+        textArea.setCodeFoldingEnabled(true);
     }
 
 }
