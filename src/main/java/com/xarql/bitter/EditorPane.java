@@ -1,31 +1,130 @@
 package com.xarql.bitter;
 
+import static com.xarql.bitter.Util.asLiteral;
+import java.awt.BorderLayout;
+import java.awt.Frame;
+import java.awt.event.ActionEvent;
+import java.awt.event.KeyEvent;
+import javax.swing.AbstractAction;
+import javax.swing.Action;
+import javax.swing.ButtonGroup;
+import javax.swing.JLabel;
+import javax.swing.JMenu;
+import javax.swing.JMenuBar;
+import javax.swing.JMenuItem;
+import javax.swing.JPanel;
+import javax.swing.JRadioButtonMenuItem;
+import javax.swing.KeyStroke;
+import javax.swing.UIManager;
+import javax.swing.text.BadLocationException;
 import org.fife.rsta.ui.GoToDialog;
 import org.fife.rsta.ui.SizeGripIcon;
 import org.fife.rsta.ui.search.ReplaceDialog;
 import org.fife.rsta.ui.search.SearchEvent;
 import org.fife.rsta.ui.search.SearchListener;
-import org.fife.ui.rsyntaxtextarea.AbstractTokenMakerFactory;
 import org.fife.ui.rsyntaxtextarea.RSyntaxTextArea;
-import org.fife.ui.rsyntaxtextarea.TokenMakerFactory;
 import org.fife.ui.rtextarea.RTextScrollPane;
 import org.fife.ui.rtextarea.SearchContext;
 import org.fife.ui.rtextarea.SearchEngine;
 import org.fife.ui.rtextarea.SearchResult;
 
-import javax.swing.*;
-import javax.swing.text.BadLocationException;
-import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.KeyEvent;
-
-import static com.xarql.bitter.Util.asLiteral;
-
 public class EditorPane extends JPanel implements SearchListener {
 
+	/**
+	 * Opens the "Go to Line" dialog.
+	 */
+	private class GoToLineAction extends AbstractAction {
+
+		/**
+		 *
+		 */
+		private static final long serialVersionUID = -5189937979427502507L;
+
+		GoToLineAction() {
+			super("Go To Line...");
+			final var c = getToolkit().getMenuShortcutKeyMaskEx();
+			putValue(ACCELERATOR_KEY, KeyStroke.getKeyStroke(KeyEvent.VK_L, c));
+		}
+
+		@Override
+		public void actionPerformed(final ActionEvent e) {
+			if(replaceDialog.isVisible()) {
+				replaceDialog.setVisible(false);
+			}
+			final var dialog = new GoToDialog(owner);
+			dialog.setMaxLineNumberAllowed(textArea.getLineCount());
+			dialog.setVisible(true);
+			final var line = dialog.getLineNumber();
+			if(line > 0) {
+				try {
+					textArea.setCaretPosition(textArea.getLineStartOffset(line - 1));
+				} catch(final BadLocationException ble) { // Never happens
+					UIManager.getLookAndFeel().provideErrorFeedback(textArea);
+					ble.printStackTrace();
+				}
+			}
+		}
+
+	}
+
+	/**
+	 * Shows the Replace dialog.
+	 */
+	private class ShowReplaceDialogAction extends AbstractAction {
+
+		/**
+		 *
+		 */
+		private static final long serialVersionUID = 3101786697029049708L;
+
+		ShowReplaceDialogAction() {
+			super("Replace...");
+			final var c = getToolkit().getMenuShortcutKeyMaskEx();
+			putValue(ACCELERATOR_KEY, KeyStroke.getKeyStroke(KeyEvent.VK_F, c));
+			firePropertyChange(SearchContext.PROPERTY_SEARCH_WRAP, (byte) 0, (byte) 1);
+		}
+
+		@Override
+		public void actionPerformed(final ActionEvent e) {
+			replaceDialog.setVisible(true);
+		}
+
+	}
+
+	/**
+	 * The status bar for this application.
+	 */
+	private static class StatusBar extends JPanel {
+
+		/**
+		 *
+		 */
+		private static final long serialVersionUID = -5533042516706232494L;
+		private final JLabel label;
+
+		StatusBar() {
+			label = new JLabel("Ready");
+			setLayout(new BorderLayout());
+			add(label, BorderLayout.LINE_START);
+			add(new JLabel(new SizeGripIcon()), BorderLayout.LINE_END);
+		}
+
+		void setLabel(final String label) {
+			this.label.setText(label);
+		}
+
+	}
+
+	/**
+	 *
+	 */
+	private static final long serialVersionUID = 132740111430332748L;
 	private final Frame owner;
+
 	private final RSyntaxTextArea textArea;
+
 	private final ReplaceDialog replaceDialog;
+
 	private final StatusBar statusBar;
 
 	public EditorPane(final Frame owner) {
@@ -36,8 +135,6 @@ public class EditorPane extends JPanel implements SearchListener {
 
 		textArea = ComponentFactory.textArea();
 		textArea.setSyntaxScheme(new KdlSyntaxScheme());
-		AbstractTokenMakerFactory atmf = (AbstractTokenMakerFactory) TokenMakerFactory.getDefaultInstance();
-		atmf.putMapping("text/kdl", "com.xarql.bitter.KdlTokenMaker");
 		textArea.setSyntaxEditingStyle("text/kdl");
 		add(new RTextScrollPane(textArea));
 		statusBar = new StatusBar();
@@ -46,17 +143,19 @@ public class EditorPane extends JPanel implements SearchListener {
 		replaceDialog = new ReplaceDialog(owner, this);
 	}
 
+	private void addItem(final Action a, final ButtonGroup bg, final JMenu menu) {
+		final var item = new JRadioButtonMenuItem(a);
+		bg.add(item);
+		menu.add(item);
+	}
+
 	private JMenuBar createMenuBar() {
-		JMenuBar mb = new JMenuBar();
-		JMenu menu = new JMenu("Text");
+		final var mb = new JMenuBar();
+		final var menu = new JMenu("Text");
 		menu.add(new JMenuItem(new ShowReplaceDialogAction()));
 		menu.add(new JMenuItem(new GoToLineAction()));
 		mb.add(menu);
 		return mb;
-	}
-
-	public RSyntaxTextArea getTextArea() {
-		return textArea;
 	}
 
 	@Override
@@ -64,24 +163,20 @@ public class EditorPane extends JPanel implements SearchListener {
 		return textArea.getSelectedText();
 	}
 
-
-	private void addItem(Action a, ButtonGroup bg, JMenu menu) {
-		JRadioButtonMenuItem item = new JRadioButtonMenuItem(a);
-		bg.add(item);
-		menu.add(item);
+	public RSyntaxTextArea getTextArea() {
+		return textArea;
 	}
 
 	/**
-	 * Listens for events from our search dialogs and actually does the dirty
-	 * work.
+	 * Listens for events from our search dialogs and actually does the dirty work.
 	 */
 	@Override
-	public void searchEvent(SearchEvent e) {
-		final SearchEvent.Type type = e.getType();
-		final SearchContext context = e.getSearchContext();
+	public void searchEvent(final SearchEvent e) {
+		final var type = e.getType();
+		final var context = e.getSearchContext();
 		final SearchResult result;
 
-		switch (type) {
+		switch(type) {
 			case MARK_ALL:
 				result = SearchEngine.markAll(textArea, context);
 				break;
@@ -119,8 +214,9 @@ public class EditorPane extends JPanel implements SearchListener {
 				default:
 					text = "Missing case in switch expression";
 			}
-			if(result.isWrapped())
+			if(result.isWrapped()) {
 				System.out.println("Search wrapped");
+			}
 		} else {
 			UIManager.getLookAndFeel().provideErrorFeedback(textArea);
 			text = asLiteral(context.getSearchFor()) + " not found";
@@ -128,77 +224,6 @@ public class EditorPane extends JPanel implements SearchListener {
 
 		System.out.println(text);
 		statusBar.setLabel(text);
-	}
-
-	/**
-	 * Opens the "Go to Line" dialog.
-	 */
-	private class GoToLineAction extends AbstractAction {
-
-		GoToLineAction() {
-			super("Go To Line...");
-			int c = getToolkit().getMenuShortcutKeyMaskEx();
-			putValue(ACCELERATOR_KEY, KeyStroke.getKeyStroke(KeyEvent.VK_L, c));
-		}
-
-		@Override
-		public void actionPerformed(ActionEvent e) {
-			if (replaceDialog.isVisible()) {
-				replaceDialog.setVisible(false);
-			}
-			GoToDialog dialog = new GoToDialog(owner);
-			dialog.setMaxLineNumberAllowed(textArea.getLineCount());
-			dialog.setVisible(true);
-			int line = dialog.getLineNumber();
-			if (line>0) {
-				try {
-					textArea.setCaretPosition(textArea.getLineStartOffset(line-1));
-				} catch (BadLocationException ble) { // Never happens
-					UIManager.getLookAndFeel().provideErrorFeedback(textArea);
-					ble.printStackTrace();
-				}
-			}
-		}
-
-	}
-
-	/**
-	 * Shows the Replace dialog.
-	 */
-	private class ShowReplaceDialogAction extends AbstractAction {
-
-		ShowReplaceDialogAction() {
-			super("Replace...");
-			int c = getToolkit().getMenuShortcutKeyMaskEx();
-			putValue(ACCELERATOR_KEY, KeyStroke.getKeyStroke(KeyEvent.VK_F, c));
-			firePropertyChange(SearchContext.PROPERTY_SEARCH_WRAP, (byte) 0, (byte) 1);
-		}
-
-		@Override
-		public void actionPerformed(ActionEvent e) {
-			replaceDialog.setVisible(true);
-		}
-
-	}
-
-	/**
-	 * The status bar for this application.
-	 */
-	private static class StatusBar extends JPanel {
-
-		private final JLabel label;
-
-		StatusBar() {
-			label = new JLabel("Ready");
-			setLayout(new BorderLayout());
-			add(label, BorderLayout.LINE_START);
-			add(new JLabel(new SizeGripIcon()), BorderLayout.LINE_END);
-		}
-
-		void setLabel(String label) {
-			this.label.setText(label);
-		}
-
 	}
 
 }

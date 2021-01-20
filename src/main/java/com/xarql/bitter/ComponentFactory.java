@@ -4,10 +4,15 @@ import org.fife.ui.rsyntaxtextarea.RSyntaxTextArea;
 import org.fife.ui.rtextarea.RTextScrollPane;
 
 public class ComponentFactory {
+
 	public static Settings settings = new Settings();
 
+	public static RTextScrollPane scrollableTextPane() {
+		return new RTextScrollPane(textArea());
+	}
+
 	public static RSyntaxTextArea textArea() {
-		RSyntaxTextArea area = new RSyntaxTextArea();
+		final var area = new RSyntaxTextArea();
 		area.setColumns(settings.columns);
 		area.setRows(settings.rows);
 		area.setTabSize(settings.tabSize);
@@ -20,10 +25,6 @@ public class ComponentFactory {
 		area.setLineWrap(settings.wrapEnabled);
 		area.setWrapStyleWord(settings.wrapWords);
 		return area;
-	}
-
-	public static RTextScrollPane scrollableTextPane() {
-		return new RTextScrollPane(textArea());
 	}
 
 }

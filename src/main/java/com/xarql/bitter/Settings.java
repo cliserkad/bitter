@@ -1,12 +1,13 @@
 package com.xarql.bitter;
 
+import java.awt.Color;
+import java.awt.Dimension;
+import java.io.File;
 import com.xarql.smp.ParseUtil;
 import com.xarql.smp.PathMap;
 
-import java.awt.*;
-import java.io.File;
-
 public class Settings {
+
 	public static final File SETTINGS_FILE = new File(System.getProperty("user.home"), "/bitter/settings.smp");
 	public static final Settings INITIAL = new Settings();
 
@@ -58,13 +59,13 @@ public class Settings {
 		selection = color("selection", DEFAULT_SELECTION);
 	}
 
-	public Color color(String path, Color backup) {
+	public Color color(final String path, final Color backup) {
 		try {
-			final int r = (int) data.get(path, "0");
-			final int g = (int) data.get(path, "1");
-			final int b = (int) data.get(path, "2");
+			final var r = (int) data.get(path, "0");
+			final var g = (int) data.get(path, "1");
+			final var b = (int) data.get(path, "2");
 			return new Color(r, g, b);
-		} catch(Exception e) {
+		} catch(final Exception e) {
 			return backup;
 		}
 	}
