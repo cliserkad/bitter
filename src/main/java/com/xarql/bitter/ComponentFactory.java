@@ -4,18 +4,21 @@ import org.fife.ui.rsyntaxtextarea.RSyntaxTextArea;
 import org.fife.ui.rtextarea.RTextScrollPane;
 
 public class ComponentFactory {
+	public static Settings settings = new Settings();
 
 	public static RSyntaxTextArea textArea() {
 		RSyntaxTextArea area = new RSyntaxTextArea();
-		area.setColumns(0);
-		area.setRows(1);
-		area.setTabSize(2);
+		area.setColumns(settings.columns);
+		area.setRows(settings.rows);
+		area.setTabSize(settings.tabSize);
 		area.setCodeFoldingEnabled(true);
 		area.setMarkOccurrences(true);
-		area.setForeground(Bitter.FOREGROUND_COLOR);
-		area.setBackground(Bitter.BACKGROUND_COLOR);
-		area.setCurrentLineHighlightColor(Bitter.CURRENT_LINE_COLOR);
-		area.setSelectionColor(Bitter.SELECTION_COLOR);
+		area.setForeground(settings.foreground);
+		area.setBackground(settings.background);
+		area.setCurrentLineHighlightColor(settings.currentLine);
+		area.setSelectionColor(settings.selection);
+		area.setLineWrap(settings.wrapEnabled);
+		area.setWrapStyleWord(settings.wrapWords);
 		return area;
 	}
 

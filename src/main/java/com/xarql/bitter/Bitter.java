@@ -7,10 +7,6 @@ import java.awt.*;
  * An epic text editor
  */
 public class Bitter extends JFrame {
-    public static final Color BACKGROUND_COLOR = new Color(40, 42, 54);
-    public static final Color FOREGROUND_COLOR = new Color(248, 248, 242);
-    public static final Color CURRENT_LINE_COLOR = new Color(68, 71, 90);
-    public static final Color SELECTION_COLOR = CURRENT_LINE_COLOR.brighter();
 
     public static void main( String[] args ) {
         SwingUtilities.invokeLater(() -> {
@@ -27,7 +23,7 @@ public class Bitter extends JFrame {
         setTitle("Bitter");
         setLayout(new GridLayout(1, 2));
         setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
-        setPreferredSize(new Dimension(640, 480));
+        setPreferredSize(Settings.INITIAL.preferredSize());
 
         EditorPane initialTab = new EditorPane(this);
 
