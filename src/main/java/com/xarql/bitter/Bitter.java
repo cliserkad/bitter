@@ -1,6 +1,5 @@
 package com.xarql.bitter;
 
-import org.fife.rsta.ui.CollapsibleSectionPanel;
 import org.fife.rsta.ui.GoToDialog;
 import org.fife.rsta.ui.SizeGripIcon;
 import org.fife.rsta.ui.search.*;
@@ -14,12 +13,14 @@ import javax.swing.*;
 import javax.swing.text.BadLocationException;
 import java.awt.*;
 import java.awt.event.ActionEvent;
-import java.awt.event.InputEvent;
 import java.awt.event.KeyEvent;
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
+
+import static com.xarql.bitter.Util.asLiteral;
 
 /**
- * Hello world!
- *
+ * An epic text editor
  */
 public class Bitter extends JFrame implements SearchListener {
     public static final Color BACKGROUND_COLOR = new Color(40, 42, 54);
@@ -32,7 +33,6 @@ public class Bitter extends JFrame implements SearchListener {
     private final StatusBar statusBar;
 
     public static void main( String[] args ) {
-        // Start all Swing applications on the EDT.
         SwingUtilities.invokeLater(() -> {
             try {
                 UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
@@ -43,43 +43,40 @@ public class Bitter extends JFrame implements SearchListener {
         });
     }
 
-    private Bitter() {
-
+    public Bitter() {
         replaceDialog = new ReplaceDialog(this, this);
+        replaceDialog.actionPerformed(new ActionEvent("defaults", 0, "FlipWrap"));
 
-        JPanel initialArea = new JPanel(new BorderLayout());
+
+        setTitle("Bitter");
+        setLayout(new GridLayout(1, 2));
+        setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
+        setPreferredSize(new Dimension(640, 480));
+
+        JPanel initialTab = new JPanel(new BorderLayout());
 
         JTabbedPane tabbedPane = new JTabbedPane();
-        setContentPane(tabbedPane);
-        tabbedPane.add(initialArea, "Document 1");
+        tabbedPane.add(initialTab, "document");
+        add(tabbedPane);
 
-        PrintStreamArea printStreamArea = new PrintStreamArea();
-        System.setOut(printStreamArea.getPrintStream());
-        System.setErr(printStreamArea.getPrintStream());
-        JScrollPane logScrollArea = new JScrollPane(printStreamArea.area());
+        PrintStreamPane printStreamPane = new PrintStreamPane();
+        System.setOut(printStreamPane.getPrintStream());
+        System.setErr(printStreamPane.getPrintStream());
         JPanel logPanel = new JPanel(new BorderLayout());
-        logPanel.add(logScrollArea);
-        tabbedPane.add(logPanel, "terminal");
+        logPanel.add(printStreamPane.pane());
+        add(logPanel);
 
         setJMenuBar(createMenuBar());
 
-        textArea = ComponentFactory.newRSyntaxTextArea();
+        textArea = ComponentFactory.textArea();
         textArea.setSyntaxScheme(new KdlSyntaxScheme());
         AbstractTokenMakerFactory atmf = (AbstractTokenMakerFactory) TokenMakerFactory.getDefaultInstance();
         atmf.putMapping("text/kdl", "com.xarql.bitter.KdlTokenMaker");
         textArea.setSyntaxEditingStyle("text/kdl");
-
-        RTextScrollPane sp = new RTextScrollPane(textArea);
-        initialArea.add(sp);
-
-        ErrorStrip errorStrip = new ErrorStrip(textArea);
-        initialArea.add(errorStrip, BorderLayout.LINE_END);
-
+        initialTab.add(new RTextScrollPane(textArea));
         statusBar = new StatusBar();
-        initialArea.add(statusBar, BorderLayout.SOUTH);
+        initialTab.add(statusBar, BorderLayout.SOUTH);
 
-        setTitle("Bitter");
-        setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
         pack();
         setLocationRelativeTo(null);
     }
@@ -97,7 +94,6 @@ public class Bitter extends JFrame implements SearchListener {
         JMenu menu = new JMenu("Text");
         menu.add(new JMenuItem(new ShowReplaceDialogAction()));
         menu.add(new JMenuItem(new GoToLineAction()));
-        menu.addSeparator();
         mb.add(menu);
         return mb;
     }
@@ -114,51 +110,59 @@ public class Bitter extends JFrame implements SearchListener {
     @Override
     public void searchEvent(SearchEvent e) {
 
-        SearchEvent.Type type = e.getType();
-        SearchContext context = e.getSearchContext();
-        SearchResult result;
+        final SearchEvent.Type type = e.getType();
+        final SearchContext context = e.getSearchContext();
+        final SearchResult result;
 
         switch (type) {
-            default: // Prevent FindBugs warning later
             case MARK_ALL:
                 result = SearchEngine.markAll(textArea, context);
                 break;
             case FIND:
                 result = SearchEngine.find(textArea, context);
-                if (!result.wasFound() || result.isWrapped()) {
-                    UIManager.getLookAndFeel().provideErrorFeedback(textArea);
-                }
                 break;
             case REPLACE:
                 result = SearchEngine.replace(textArea, context);
-                if (!result.wasFound() || result.isWrapped()) {
-                    UIManager.getLookAndFeel().provideErrorFeedback(textArea);
-                }
                 break;
             case REPLACE_ALL:
                 result = SearchEngine.replaceAll(textArea, context);
-                JOptionPane.showMessageDialog(null, result.getCount() +
-                        " occurrences replaced.");
                 break;
+            default:
+                result = null;
         }
 
-        String text;
-        if (result.wasFound()) {
-            text = "Text found; occurrences marked: " + result.getMarkedCount();
-        }
-        else if (type==SearchEvent.Type.MARK_ALL) {
-            if (result.getMarkedCount()>0) {
-                text = "Occurrences marked: " + result.getMarkedCount();
+        final String text;
+        if(result == null) {
+            text = "Search result was null";
+            UIManager.getLookAndFeel().provideErrorFeedback(textArea);
+        } else if(result.wasFound()) {
+            switch(type) {
+                case MARK_ALL:
+                    text = "Highlighted " + asLiteral(context.getSearchFor()) + " " + result.getCount() + " times.";
+                    break;
+                case FIND:
+                    text = "Found " + asLiteral(context.getSearchFor());
+                    break;
+                case REPLACE:
+                    text = "Replaced " + asLiteral(context.getSearchFor()) + " with " + asLiteral(context.getReplaceWith());
+                    break;
+                case REPLACE_ALL:
+                    text = "Replaced " + asLiteral(context.getSearchFor()) + " with " + asLiteral(context.getReplaceWith()) + " " + result.getCount() + " times.";
+                    break;
+                default:
+                    text = "Missing case in switch expression";
             }
-            else {
-                text = "";
-            }
+            if(result.isWrapped())
+                System.out.println("Search wrapped");
+        } else {
+            UIManager.getLookAndFeel().provideErrorFeedback(textArea);
+            text = asLiteral(context.getSearchFor()) + " not found";
         }
-        else {
-            text = "Text not found";
-        }
+
+
+
+        System.out.println(text);
         statusBar.setLabel(text);
-
     }
 
     /**
@@ -200,8 +204,9 @@ public class Bitter extends JFrame implements SearchListener {
 
         ShowReplaceDialogAction() {
             super("Replace...");
-            int c = getToolkit().getMenuShortcutKeyMask();
-            putValue(ACCELERATOR_KEY, KeyStroke.getKeyStroke(KeyEvent.VK_H, c));
+            int c = getToolkit().getMenuShortcutKeyMaskEx();
+            putValue(ACCELERATOR_KEY, KeyStroke.getKeyStroke(KeyEvent.VK_F, c));
+            firePropertyChange(SearchContext.PROPERTY_SEARCH_WRAP, (byte) 0, (byte) 1);
         }
 
         @Override
