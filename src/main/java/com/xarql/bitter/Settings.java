@@ -13,6 +13,8 @@ public class Settings {
 
 	public static final boolean DEFAULT_WRAP_ENABLED = true;
 	public static final boolean DEFAULT_WRAP_WORDS = true;
+	public static final boolean DEFAULT_FILES_CONTROLS = false;
+	public static final boolean DEFAULT_FILES_HIDDEN = true;
 
 	public static final int DEFAULT_WIDTH = 640;
 	public static final int DEFAULT_HEIGHT = 480;
@@ -29,6 +31,8 @@ public class Settings {
 
 	public final boolean wrapEnabled;
 	public final boolean wrapWords;
+	public final boolean filesControls;
+	public final boolean filesHidden;
 
 	public final int width;
 	public final int height;
@@ -46,6 +50,8 @@ public class Settings {
 
 		wrapEnabled = (boolean) data.getOrDefault("wrap/enabled", DEFAULT_WRAP_ENABLED);
 		wrapWords = (boolean) data.getOrDefault("wrap/words", DEFAULT_WRAP_WORDS);
+		filesControls = (boolean) data.getOrDefault("files/controls", DEFAULT_FILES_CONTROLS);
+		filesHidden = (boolean) data.getOrDefault("files/hidden", DEFAULT_FILES_HIDDEN);
 
 		width = (int) data.getOrDefault("width", DEFAULT_WIDTH);
 		height = (int) data.getOrDefault("height", DEFAULT_HEIGHT);

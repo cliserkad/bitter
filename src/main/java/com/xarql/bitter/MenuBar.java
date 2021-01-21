@@ -1,14 +1,16 @@
 package com.xarql.bitter;
 
 import org.fife.rsta.ui.GoToDialog;
-import org.fife.ui.rtextarea.SearchContext;
 
 import javax.swing.*;
 import javax.swing.text.BadLocationException;
 import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
+import java.io.File;
+import java.security.Key;
 
 public class MenuBar extends JMenuBar {
+	public static final String ELLIPSES = "...";
 
 	public EditorPane editor;
 	private final JFrame owner;
@@ -16,10 +18,66 @@ public class MenuBar extends JMenuBar {
 	public MenuBar(final JFrame owner) {
 		super();
 		this.owner = owner;
-		final var menu = new JMenu("Text");
-		menu.add(new JMenuItem(new ShowReplaceDialogAction()));
-		menu.add(new JMenuItem(new GoToLineAction()));
-		add(menu);
+
+		final var text = new JMenu("Text");
+		text.add(new JMenuItem(new ShowReplaceDialogAction()));
+		text.add(new JMenuItem(new GoToLineAction()));
+		add(text);
+
+		final var file = new JMenu("File");
+		file.add(new JMenuItem(new SaveAction()));
+		file.add(new JMenuItem(new SaveAsAction()));
+		file.add(new JMenuItem(new ReloadAction()));
+		file.add(new JMenuItem(new OpenAction()));
+		add(file);
+	}
+
+	private class SaveAction extends AbstractAction {
+		SaveAction() {
+			super("Save" + ELLIPSES);
+			putValue(ACCELERATOR_KEY, KeyStroke.getKeyStroke(KeyEvent.VK_S, KeyEvent.CTRL_DOWN_MASK));
+		}
+
+		@Override
+		public void actionPerformed(ActionEvent e) {
+			editor.fileDialog.perform(FileDialog.Mode.SAVE);
+		}
+	}
+
+	private class SaveAsAction extends AbstractAction {
+		SaveAsAction() {
+			super(FileDialog.SAVE_AS + ELLIPSES);
+			putValue(ACCELERATOR_KEY, KeyStroke.getKeyStroke(KeyEvent.VK_S, KeyEvent.CTRL_DOWN_MASK + KeyEvent.SHIFT_DOWN_MASK));
+		}
+
+		@Override
+		public void actionPerformed(ActionEvent e) {
+			editor.fileDialog.perform(FileDialog.Mode.SAVE_AS);
+		}
+	}
+
+	private class ReloadAction extends AbstractAction {
+		ReloadAction() {
+			super("Reload" + ELLIPSES);
+			putValue(ACCELERATOR_KEY, KeyStroke.getKeyStroke(KeyEvent.VK_R, KeyEvent.CTRL_DOWN_MASK));
+		}
+
+		@Override
+		public void actionPerformed(ActionEvent e) {
+			editor.fileDialog.perform(FileDialog.Mode.RELOAD);
+		}
+	}
+
+	private class OpenAction extends AbstractAction {
+		OpenAction() {
+			super(FileDialog.OPEN + ELLIPSES);
+			putValue(ACCELERATOR_KEY, KeyStroke.getKeyStroke(KeyEvent.VK_O, KeyEvent.CTRL_DOWN_MASK));
+		}
+
+		@Override
+		public void actionPerformed(ActionEvent e) {
+			editor.fileDialog.perform(FileDialog.Mode.OPEN);
+		}
 	}
 
 	/**
@@ -30,8 +88,7 @@ public class MenuBar extends JMenuBar {
 
 		GoToLineAction() {
 			super("Go To Line...");
-			final var c = getToolkit().getMenuShortcutKeyMaskEx();
-			putValue(ACCELERATOR_KEY, KeyStroke.getKeyStroke(KeyEvent.VK_G, c));
+			putValue(ACCELERATOR_KEY, KeyStroke.getKeyStroke(KeyEvent.VK_G, KeyEvent.CTRL_DOWN_MASK));
 		}
 
 		@Override
@@ -62,10 +119,8 @@ public class MenuBar extends JMenuBar {
 		private static final long serialVersionUID = 3101786697029049708L;
 
 		ShowReplaceDialogAction() {
-			super("Replace...");
-			final var c = getToolkit().getMenuShortcutKeyMaskEx();
-			putValue(ACCELERATOR_KEY, KeyStroke.getKeyStroke(KeyEvent.VK_F, c));
-			firePropertyChange(SearchContext.PROPERTY_SEARCH_WRAP, (byte) 0, (byte) 1);
+			super("Find...");
+			putValue(ACCELERATOR_KEY, KeyStroke.getKeyStroke(KeyEvent.VK_F, KeyEvent.CTRL_DOWN_MASK));
 		}
 
 		@Override

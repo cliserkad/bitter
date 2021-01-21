@@ -5,13 +5,11 @@ import org.fife.ui.rtextarea.RTextScrollPane;
 
 public class ComponentFactory {
 
-	public static Settings settings = new Settings();
-
-	public static RTextScrollPane scrollableTextPane() {
-		return new RTextScrollPane(textArea());
+	public static RTextScrollPane scrollableTextPane(final Settings settings) {
+		return new RTextScrollPane(textArea(settings));
 	}
 
-	public static RSyntaxTextArea textArea() {
+	public static RSyntaxTextArea textArea(final Settings settings) {
 		final var area = new RSyntaxTextArea();
 		area.setColumns(settings.columns);
 		area.setRows(settings.rows);

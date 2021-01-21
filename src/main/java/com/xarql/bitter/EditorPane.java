@@ -4,29 +4,19 @@ import static com.xarql.bitter.Util.asLiteral;
 
 import java.awt.BorderLayout;
 import java.awt.Frame;
-import java.awt.event.ActionEvent;
-import java.awt.event.KeyEvent;
-import javax.swing.AbstractAction;
+import java.io.File;
 import javax.swing.Action;
 import javax.swing.ButtonGroup;
-import javax.swing.JLabel;
 import javax.swing.JMenu;
-import javax.swing.JMenuBar;
-import javax.swing.JMenuItem;
 import javax.swing.JPanel;
 import javax.swing.JRadioButtonMenuItem;
-import javax.swing.KeyStroke;
 import javax.swing.UIManager;
-import javax.swing.text.BadLocationException;
 
-import org.fife.rsta.ui.GoToDialog;
-import org.fife.rsta.ui.SizeGripIcon;
 import org.fife.rsta.ui.search.ReplaceDialog;
 import org.fife.rsta.ui.search.SearchEvent;
 import org.fife.rsta.ui.search.SearchListener;
 import org.fife.ui.rsyntaxtextarea.RSyntaxTextArea;
 import org.fife.ui.rtextarea.RTextScrollPane;
-import org.fife.ui.rtextarea.SearchContext;
 import org.fife.ui.rtextarea.SearchEngine;
 import org.fife.ui.rtextarea.SearchResult;
 
@@ -35,16 +25,23 @@ public class EditorPane extends JPanel implements SearchListener {
 
 	public final RSyntaxTextArea textArea;
 	public final ReplaceDialog replaceDialog;
+	public final FileDialog fileDialog;
+	public final Settings settings;
+
+	public File location;
 
 	public EditorPane(final Frame owner) {
 		setLayout(new BorderLayout());
 
-		textArea = ComponentFactory.textArea();
+		settings = new Settings();
+		textArea = ComponentFactory.textArea(settings);
 		textArea.setSyntaxScheme(new KdlSyntaxScheme());
 		textArea.setSyntaxEditingStyle("text/kdl");
 		add(new RTextScrollPane(textArea));
 
 		replaceDialog = new ReplaceDialog(owner, this);
+		fileDialog = new FileDialog(owner, this);
+		location = null;
 	}
 
 	private void addItem(final Action a, final ButtonGroup bg, final JMenu menu) {

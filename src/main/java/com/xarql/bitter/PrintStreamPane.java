@@ -9,7 +9,7 @@ public class PrintStreamPane {
 
 	private class AreaOutputStream extends OutputStream {
 
-		public final RTextScrollPane pane = ComponentFactory.scrollableTextPane();
+		public final RTextScrollPane pane = ComponentFactory.scrollableTextPane(new Settings());
 
 		@Override
 		public void write(final int b) {
