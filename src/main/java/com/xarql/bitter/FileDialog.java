@@ -19,7 +19,7 @@ public class FileDialog extends EscapableDialog implements ActionListener {
 	private int result;
 
 	public FileDialog(final Frame owner, final EditorPane editor) {
-		super(owner, "Save As", true);
+		super(owner, FileDialog.class.getSimpleName(), true);
 		this.editor = editor;
 		fileChooser = new JFileChooser();
 		fileChooser.addActionListener(this);

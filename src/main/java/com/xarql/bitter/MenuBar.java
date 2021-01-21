@@ -13,9 +13,9 @@ public class MenuBar extends JMenuBar {
 	public static final String ELLIPSES = "...";
 
 	public EditorPane editor;
-	private final JFrame owner;
+	private final Bitter owner;
 
-	public MenuBar(final JFrame owner) {
+	public MenuBar(final Bitter owner) {
 		super();
 		this.owner = owner;
 
@@ -30,6 +30,35 @@ public class MenuBar extends JMenuBar {
 		file.add(new JMenuItem(new ReloadAction()));
 		file.add(new JMenuItem(new OpenAction()));
 		add(file);
+
+		final var editor = new JMenu("Editor");
+		file.add(new JMenuItem(new CloseTabAction()));
+		file.add(new JMenuItem(new NewTabAction()));
+		add(editor);
+	}
+
+	private class NewTabAction extends AbstractAction {
+		NewTabAction() {
+			super("New" + ELLIPSES);
+			putValue(ACCELERATOR_KEY, KeyStroke.getKeyStroke(KeyEvent.VK_N, KeyEvent.CTRL_DOWN_MASK));
+		}
+
+		@Override
+		public void actionPerformed(ActionEvent e) {
+			owner.tabbedPane.addTab("new tab", new EditorPane(owner));
+		}
+	}
+
+	private class CloseTabAction extends AbstractAction {
+		CloseTabAction() {
+			super("Close" + ELLIPSES);
+			putValue(ACCELERATOR_KEY, KeyStroke.getKeyStroke(KeyEvent.VK_W, KeyEvent.CTRL_DOWN_MASK));
+		}
+
+		@Override
+		public void actionPerformed(ActionEvent e) {
+			owner.tabbedPane.remove(owner.tabbedPane.getSelectedComponent());
+		}
 	}
 
 	private class SaveAction extends AbstractAction {

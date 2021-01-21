@@ -3,6 +3,8 @@ package com.xarql.bitter;
 import java.awt.BorderLayout;
 import java.awt.GridLayout;
 import javax.swing.*;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
 
 import org.fife.ui.rsyntaxtextarea.AbstractTokenMakerFactory;
 import org.fife.ui.rsyntaxtextarea.TokenMakerFactory;
@@ -11,7 +13,7 @@ import org.fife.ui.rsyntaxtextarea.folding.FoldParserManager;
 /**
  * An epic text editor
  */
-public class Bitter extends JFrame {
+public class Bitter extends JFrame implements ChangeListener {
 	private static final long serialVersionUID = -7097067406931407761L;
 
 	public final MenuBar menuBar;
@@ -46,6 +48,7 @@ public class Bitter extends JFrame {
 		leftPane.add(menuBar, BorderLayout.NORTH);
 
 		tabbedPane = new JTabbedPane();
+		tabbedPane.addChangeListener(this);
 		leftPane.add(tabbedPane);
 
 		final var initialTab = new EditorPane(this);
@@ -66,4 +69,11 @@ public class Bitter extends JFrame {
 		setLocationRelativeTo(null);
 	}
 
+	@Override
+	public void stateChanged(ChangeEvent e) {
+		if(tabbedPane.getSelectedComponent() instanceof EditorPane)
+			menuBar.editor = (EditorPane) tabbedPane.getSelectedComponent();
+		else
+			System.err.println("Couldn't update menu bar's editor because the current tab is not an EditorPane");
+	}
 }
