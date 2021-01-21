@@ -1,8 +1,8 @@
 package com.xarql.bitter;
 
+import com.xarql.kdl.antlr.kdlLexerModified;
 import org.antlr.v4.runtime.CharStreams;
 import org.antlr.v4.runtime.Lexer;
-import com.xarql.kdl.antlr.kdlLexerModified;
 
 public class KdlTokenMaker extends AntlrTokenMaker {
 

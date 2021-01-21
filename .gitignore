@@ -5,3 +5,4 @@
 **/gen
 **/.settings
 .project
+/src/main/java/com/xarql/kdl/antlr/*

@@ -1,10 +1,11 @@
 package com.xarql.bitter;
 
-import static com.xarql.kdl.antlr.kdlLexerModified.*;
 import java.awt.Color;
 import org.fife.ui.rsyntaxtextarea.Style;
 import org.fife.ui.rsyntaxtextarea.SyntaxScheme;
 import com.xarql.kdl.antlr.kdlLexerModified;
+
+import static com.xarql.kdl.antlr.kdlLexerModified.*;
 
 public class KdlSyntaxScheme extends SyntaxScheme {
 

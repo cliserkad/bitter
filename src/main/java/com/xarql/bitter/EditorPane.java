@@ -1,6 +1,7 @@
 package com.xarql.bitter;
 
 import static com.xarql.bitter.Util.asLiteral;
+
 import java.awt.BorderLayout;
 import java.awt.Frame;
 import java.awt.event.ActionEvent;
@@ -17,6 +18,7 @@ import javax.swing.JRadioButtonMenuItem;
 import javax.swing.KeyStroke;
 import javax.swing.UIManager;
 import javax.swing.text.BadLocationException;
+
 import org.fife.rsta.ui.GoToDialog;
 import org.fife.rsta.ui.SizeGripIcon;
 import org.fife.rsta.ui.search.ReplaceDialog;
@@ -29,116 +31,18 @@ import org.fife.ui.rtextarea.SearchEngine;
 import org.fife.ui.rtextarea.SearchResult;
 
 public class EditorPane extends JPanel implements SearchListener {
-
-	/**
-	 * Opens the "Go to Line" dialog.
-	 */
-	private class GoToLineAction extends AbstractAction {
-
-		/**
-		 *
-		 */
-		private static final long serialVersionUID = -5189937979427502507L;
-
-		GoToLineAction() {
-			super("Go To Line...");
-			final var c = getToolkit().getMenuShortcutKeyMaskEx();
-			putValue(ACCELERATOR_KEY, KeyStroke.getKeyStroke(KeyEvent.VK_L, c));
-		}
-
-		@Override
-		public void actionPerformed(final ActionEvent e) {
-			if(replaceDialog.isVisible()) {
-				replaceDialog.setVisible(false);
-			}
-			final var dialog = new GoToDialog(owner);
-			dialog.setMaxLineNumberAllowed(textArea.getLineCount());
-			dialog.setVisible(true);
-			final var line = dialog.getLineNumber();
-			if(line > 0) {
-				try {
-					textArea.setCaretPosition(textArea.getLineStartOffset(line - 1));
-				} catch(final BadLocationException ble) { // Never happens
-					UIManager.getLookAndFeel().provideErrorFeedback(textArea);
-					ble.printStackTrace();
-				}
-			}
-		}
-
-	}
-
-	/**
-	 * Shows the Replace dialog.
-	 */
-	private class ShowReplaceDialogAction extends AbstractAction {
-
-		/**
-		 *
-		 */
-		private static final long serialVersionUID = 3101786697029049708L;
-
-		ShowReplaceDialogAction() {
-			super("Replace...");
-			final var c = getToolkit().getMenuShortcutKeyMaskEx();
-			putValue(ACCELERATOR_KEY, KeyStroke.getKeyStroke(KeyEvent.VK_F, c));
-			firePropertyChange(SearchContext.PROPERTY_SEARCH_WRAP, (byte) 0, (byte) 1);
-		}
-
-		@Override
-		public void actionPerformed(final ActionEvent e) {
-			replaceDialog.setVisible(true);
-		}
-
-	}
-
-	/**
-	 * The status bar for this application.
-	 */
-	private static class StatusBar extends JPanel {
-
-		/**
-		 *
-		 */
-		private static final long serialVersionUID = -5533042516706232494L;
-		private final JLabel label;
-
-		StatusBar() {
-			label = new JLabel("Ready");
-			setLayout(new BorderLayout());
-			add(label, BorderLayout.LINE_START);
-			add(new JLabel(new SizeGripIcon()), BorderLayout.LINE_END);
-		}
-
-		void setLabel(final String label) {
-			this.label.setText(label);
-		}
-
-	}
-
-	/**
-	 *
-	 */
 	private static final long serialVersionUID = 132740111430332748L;
-	private final Frame owner;
 
-	private final RSyntaxTextArea textArea;
-
-	private final ReplaceDialog replaceDialog;
-
-	private final StatusBar statusBar;
+	public final RSyntaxTextArea textArea;
+	public final ReplaceDialog replaceDialog;
 
 	public EditorPane(final Frame owner) {
-		this.owner = owner;
 		setLayout(new BorderLayout());
-
-		add(createMenuBar(), BorderLayout.NORTH);
 
 		textArea = ComponentFactory.textArea();
 		textArea.setSyntaxScheme(new KdlSyntaxScheme());
 		textArea.setSyntaxEditingStyle("text/kdl");
 		add(new RTextScrollPane(textArea));
-		statusBar = new StatusBar();
-		add(statusBar, BorderLayout.SOUTH);
 
 		replaceDialog = new ReplaceDialog(owner, this);
 	}
@@ -149,22 +53,9 @@ public class EditorPane extends JPanel implements SearchListener {
 		menu.add(item);
 	}
 
-	private JMenuBar createMenuBar() {
-		final var mb = new JMenuBar();
-		final var menu = new JMenu("Text");
-		menu.add(new JMenuItem(new ShowReplaceDialogAction()));
-		menu.add(new JMenuItem(new GoToLineAction()));
-		mb.add(menu);
-		return mb;
-	}
-
 	@Override
 	public String getSelectedText() {
 		return textArea.getSelectedText();
-	}
-
-	public RSyntaxTextArea getTextArea() {
-		return textArea;
 	}
 
 	/**
@@ -176,7 +67,7 @@ public class EditorPane extends JPanel implements SearchListener {
 		final var context = e.getSearchContext();
 		final SearchResult result;
 
-		switch(type) {
+		switch (type) {
 			case MARK_ALL:
 				result = SearchEngine.markAll(textArea, context);
 				break;
@@ -194,11 +85,11 @@ public class EditorPane extends JPanel implements SearchListener {
 		}
 
 		final String text;
-		if(result == null) {
+		if (result == null) {
 			text = "Search result was null";
 			UIManager.getLookAndFeel().provideErrorFeedback(textArea);
-		} else if(result.wasFound()) {
-			switch(type) {
+		} else if (result.wasFound()) {
+			switch (type) {
 				case MARK_ALL:
 					text = "Highlighted " + asLiteral(context.getSearchFor()) + " " + result.getCount() + " times.";
 					break;
@@ -214,7 +105,7 @@ public class EditorPane extends JPanel implements SearchListener {
 				default:
 					text = "Missing case in switch expression";
 			}
-			if(result.isWrapped()) {
+			if (result.isWrapped()) {
 				System.out.println("Search wrapped");
 			}
 		} else {
@@ -223,7 +114,6 @@ public class EditorPane extends JPanel implements SearchListener {
 		}
 
 		System.out.println(text);
-		statusBar.setLabel(text);
 	}
 
 }
