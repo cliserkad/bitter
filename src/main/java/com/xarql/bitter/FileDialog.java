@@ -23,7 +23,6 @@ public class FileDialog extends EscapableDialog implements ActionListener {
 		this.editor = editor;
 		fileChooser = new JFileChooser();
 		fileChooser.addActionListener(this);
-		fileChooser.setControlButtonsAreShown(editor.settings.filesControls);
 		fileChooser.setFileHidingEnabled(!editor.settings.filesHidden);
 		fileChooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
 		fileChooser.setMultiSelectionEnabled(false);
@@ -62,7 +61,7 @@ public class FileDialog extends EscapableDialog implements ActionListener {
 
 	public void save() {
 		mode = Mode.SAVE;
-		if(editor.location == null) {
+		if(editor.getFile() == null) {
 			mode = Mode.SAVE_AS;
 			setVisible(true);
 		} else {
@@ -72,8 +71,8 @@ public class FileDialog extends EscapableDialog implements ActionListener {
 
 	private void write() {
 		try {
-			Files.write(editor.location.toPath(), editor.textArea.getText().getBytes());
-			System.out.println("Wrote " + editor.textArea.getText().getBytes().length + " bytes to " + editor.location);
+			Files.write(editor.getFile().toPath(), editor.textArea.getText().getBytes());
+			System.out.println("Wrote " + editor.textArea.getText().getBytes().length + " bytes to " + editor.getFile());
 		} catch(IOException e) {
 			e.printStackTrace();
 		}
@@ -81,7 +80,7 @@ public class FileDialog extends EscapableDialog implements ActionListener {
 
 	public void reload() {
 		mode = Mode.RELOAD;
-		if(editor.location == null) {
+		if(editor.getFile() == null) {
 			mode = Mode.OPEN;
 			setVisible(true);
 		} else {
@@ -91,9 +90,9 @@ public class FileDialog extends EscapableDialog implements ActionListener {
 
 	private void read() {
 		try {
-			final String text = new String(Files.readAllBytes(editor.location.toPath()));
+			final String text = new String(Files.readAllBytes(editor.getFile().toPath()));
 			editor.textArea.setText(text);
-			System.out.println("Read " + editor.textArea.getText().getBytes().length + " bytes from " + editor.location);
+			System.out.println("Read " + editor.textArea.getText().getBytes().length + " bytes from " + editor.getFile());
 		} catch(IOException e) {
 			e.printStackTrace();
 		}
@@ -104,14 +103,14 @@ public class FileDialog extends EscapableDialog implements ActionListener {
 		if(e.getSource() instanceof JFileChooser) {
 			if(result == JFileChooser.APPROVE_OPTION) {
 				if(mode == Mode.SAVE_AS) {
-					editor.location = fileChooser.getSelectedFile();
+					editor.setFile(fileChooser.getSelectedFile());
 					write();
 				} else if(mode == Mode.OPEN) {
-					editor.location = fileChooser.getSelectedFile();
+					editor.setFile(fileChooser.getSelectedFile());
 					read();
 				}
 			} else {
-				System.out.println("File not saved. Location is " + editor.location);
+				System.out.println("File not saved. Location is " + editor.getFile());
 			}
 		}
 	}

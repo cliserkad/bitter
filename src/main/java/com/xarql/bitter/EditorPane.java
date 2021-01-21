@@ -23,12 +23,16 @@ import org.fife.ui.rtextarea.SearchResult;
 public class EditorPane extends JPanel implements SearchListener {
 	private static final long serialVersionUID = 132740111430332748L;
 
+	public static final String KDL = "text/kdl";
+	public static final String SMP = "text/smp";
+	public static final String TXT = "text/txt";
+
 	public final RSyntaxTextArea textArea;
 	public final ReplaceDialog replaceDialog;
 	public final FileDialog fileDialog;
 	public final Settings settings;
 
-	public File location;
+	private File file;
 
 	public EditorPane(final Frame owner) {
 		setLayout(new BorderLayout());
@@ -41,7 +45,36 @@ public class EditorPane extends JPanel implements SearchListener {
 
 		replaceDialog = new ReplaceDialog(owner, this);
 		fileDialog = new FileDialog(owner, this);
-		location = null;
+		file = null;
+	}
+
+	public File getFile() {
+		return file;
+	}
+
+	public File setFile(final File file) {
+		this.file = file;
+		if(file.getName().endsWith(".smp"))
+			setSyntax(SMP);
+		else if(file.getName().endsWith(".kdl"))
+			setSyntax(KDL);
+		else
+			setSyntax(TXT);
+		return file;
+	}
+
+	public void setSyntax(String syntax) {
+		syntax = syntax.trim();
+		if(syntax.equalsIgnoreCase(SMP)) {
+			textArea.setSyntaxScheme(new SmpSyntaxScheme());
+			textArea.setSyntaxEditingStyle(SMP);
+		} else if(syntax.equalsIgnoreCase(KDL)){
+			textArea.setSyntaxScheme(new KdlSyntaxScheme());
+			textArea.setSyntaxEditingStyle(KDL);
+		} else {
+			textArea.setSyntaxScheme(null);
+			textArea.setSyntaxEditingStyle(null);
+		}
 	}
 
 	private void addItem(final Action a, final ButtonGroup bg, final JMenu menu) {

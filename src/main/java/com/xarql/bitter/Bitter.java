@@ -36,6 +36,7 @@ public class Bitter extends JFrame {
 
 		final var atmf = (AbstractTokenMakerFactory) TokenMakerFactory.getDefaultInstance();
 		atmf.putMapping("text/kdl", "com.xarql.bitter.KdlTokenMaker");
+		atmf.putMapping("text/smp", "com.xarql.bitter.SmpTokenMaker");
 
 		final var leftPane = new JPanel();
 		leftPane.setLayout(new BorderLayout());

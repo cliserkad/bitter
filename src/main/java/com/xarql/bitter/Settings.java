@@ -3,7 +3,10 @@ package com.xarql.bitter;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.io.File;
+
+import com.xarql.smp.ParseData;
 import com.xarql.smp.ParseUtil;
+import com.xarql.smp.Path;
 import com.xarql.smp.PathMap;
 
 public class Settings {
@@ -13,25 +16,21 @@ public class Settings {
 
 	public static final boolean DEFAULT_WRAP_ENABLED = true;
 	public static final boolean DEFAULT_WRAP_WORDS = true;
-	public static final boolean DEFAULT_FILES_CONTROLS = false;
 	public static final boolean DEFAULT_FILES_HIDDEN = true;
 
 	public static final int DEFAULT_WIDTH = 640;
 	public static final int DEFAULT_HEIGHT = 480;
 	public static final int DEFAULT_TAB_SIZE = 2;
-	public static final int DEFAULT_COLUMNS = 0;
-	public static final int DEFAULT_ROWS = 1;
 
 	public static final Color DEFAULT_BACKGROUND = new Color(40, 42, 54);
 	public static final Color DEFAULT_FOREGROUND = new Color(248, 248, 242);
 	public static final Color DEFAULT_CURRENT_LINE = new Color(68, 71, 90);
 	public static final Color DEFAULT_SELECTION = DEFAULT_CURRENT_LINE.brighter();
 
-	public final PathMap<Object> data;
+	public final ParseData data;
 
 	public final boolean wrapEnabled;
 	public final boolean wrapWords;
-	public final boolean filesControls;
 	public final boolean filesHidden;
 
 	public final int width;
@@ -48,16 +47,15 @@ public class Settings {
 	public Settings() {
 		data = ParseUtil.parse(SETTINGS_FILE);
 
-		wrapEnabled = (boolean) data.getOrDefault("wrap/enabled", DEFAULT_WRAP_ENABLED);
-		wrapWords = (boolean) data.getOrDefault("wrap/words", DEFAULT_WRAP_WORDS);
-		filesControls = (boolean) data.getOrDefault("files/controls", DEFAULT_FILES_CONTROLS);
-		filesHidden = (boolean) data.getOrDefault("files/hidden", DEFAULT_FILES_HIDDEN);
+		wrapEnabled = data.getBooleanOrDefault("wrap/enabled", DEFAULT_WRAP_ENABLED);
+		wrapWords = data.getBooleanOrDefault("wrap/words", DEFAULT_WRAP_WORDS);
+		filesHidden = data.getBooleanOrDefault("files/hidden", DEFAULT_FILES_HIDDEN);
 
-		width = (int) data.getOrDefault("width", DEFAULT_WIDTH);
-		height = (int) data.getOrDefault("height", DEFAULT_HEIGHT);
-		tabSize = (int) data.getOrDefault("tabSize", DEFAULT_TAB_SIZE);
-		columns = (int) data.getOrDefault("columns", DEFAULT_COLUMNS);
-		rows = (int) data.getOrDefault("rows", DEFAULT_ROWS);
+		width = data.getIntOrDefault("width", DEFAULT_WIDTH);
+		height = data.getIntOrDefault("height", DEFAULT_HEIGHT);
+		tabSize = data.getIntOrDefault("tabSize", DEFAULT_TAB_SIZE);
+		columns = data.getIntOrDefault("columns");
+		rows = data.getIntOrDefault("rows");
 
 		background = color("background", DEFAULT_BACKGROUND);
 		foreground = color("foreground", DEFAULT_FOREGROUND);
@@ -65,15 +63,15 @@ public class Settings {
 		selection = color("selection", DEFAULT_SELECTION);
 	}
 
-	public Color color(final String path, final Color backup) {
-		try {
-			final var r = (int) data.get(path, "0");
-			final var g = (int) data.get(path, "1");
-			final var b = (int) data.get(path, "2");
-			return new Color(r, g, b);
-		} catch(final Exception e) {
+	public Color color(final String s, final Color backup) {
+		final var path = new Path(s);
+		final var r = data.getIntOrDefault(path.append("0"), -1);
+		final var g = data.getIntOrDefault(path.append("1"), -1);
+		final var b = data.getIntOrDefault(path.append("2"), -1);
+		if((r | g | b) < 0)
 			return backup;
-		}
+		else
+			return new Color(r, g, b);
 	}
 
 	public Dimension preferredSize() {
