@@ -1,7 +1,5 @@
 package com.xarql.bitter;
 
-import com.xarql.smp.ParseData;
-
 public class Util {
 
 	public static final char QUOTE = '"';
@@ -29,41 +27,30 @@ public class Util {
 	}
 
 	public static String formatForFile(final String s) {
-		final String tabby = replaceSpacesWithTabs(s);
 		var builder = new StringBuilder();
-		builder.ensureCapacity(tabby.length() + 1);
+		builder.ensureCapacity(s.length() + 1);
 		boolean pastNewline = false;
-		for(int i = tabby.length() - 1; i >= 0; i--) {
-			if(tabby.charAt(i) == NEWLINE) {
-				if(i > 0 && tabby.charAt(i - 1) != NEWLINE)
+		for(int i = s.length() - 1; i >= 0; i--) {
+			if(s.charAt(i) == NEWLINE) {
+				if(i > 1 && (s.charAt(i - 1) != NEWLINE || s.charAt(i - 2) != NEWLINE)) {
 					builder.append(NEWLINE);
+				}
 				pastNewline = true;
+			} else if(s.charAt(i) == SPACE && i > 0 && s.charAt(i - 1) == SPACE) {
+				builder.append(TAB);
+				i--;
 			} else {
-				if(pastNewline && Character.isWhitespace(tabby.charAt(i))) {
+				if(pastNewline && Character.isWhitespace(s.charAt(i))) {
 					// do nothing
 				} else {
-					builder.append(tabby.charAt(i));
+					builder.append(s.charAt(i));
 					pastNewline = false;
 				}
 			}
 		}
 		builder.reverse();
-		if(tabby.charAt(tabby.length() - 1) != NEWLINE)
+		if(s.charAt(s.length() - 1) != NEWLINE)
 			builder.append(NEWLINE);
-		return builder.toString();
-	}
-
-	public static String replaceSpacesWithTabs(final String s) {
-		var builder = new StringBuilder();
-		builder.ensureCapacity(s.length());
-		for(int i = 0; i < s.length() - 1; i++) {
-			if(s.charAt(i) == SPACE && s.charAt(i + 1) == SPACE) {
-				builder.append(TAB);
-				i++;
-			} else
-				builder.append(s.charAt(i));
-		}
-		builder.append(s.charAt(s.length() - 1));
 		return builder.toString();
 	}
 
