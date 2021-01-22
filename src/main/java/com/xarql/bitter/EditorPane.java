@@ -53,13 +53,15 @@ public class EditorPane extends JPanel implements SearchListener {
 	}
 
 	public File setFile(final File file) {
+		if(file == null)
+			throw new NullPointerException();
 		this.file = file;
 		if(file.getName().endsWith(".smp"))
 			setSyntax(SMP);
 		else if(file.getName().endsWith(".kdl"))
 			setSyntax(KDL);
 		else
-			setSyntax(TXT);
+			setSyntax(SMP);
 		return file;
 	}
 

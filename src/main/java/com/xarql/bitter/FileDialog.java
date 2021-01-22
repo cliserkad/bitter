@@ -9,6 +9,8 @@ import java.awt.event.ActionListener;
 import java.io.IOException;
 import java.nio.file.Files;
 
+import static com.xarql.bitter.Util.formatForFile;
+
 public class FileDialog extends EscapableDialog implements ActionListener {
 	public static final String SAVE_AS = "Save As";
 	public static final String OPEN = "Open";
@@ -71,6 +73,7 @@ public class FileDialog extends EscapableDialog implements ActionListener {
 
 	private void write() {
 		try {
+			editor.textArea.setText(formatForFile(editor.textArea.getText()));
 			Files.write(editor.getFile().toPath(), editor.textArea.getText().getBytes());
 			System.out.println("Wrote " + editor.textArea.getText().getBytes().length + " bytes to " + editor.getFile());
 		} catch(IOException e) {
@@ -102,13 +105,18 @@ public class FileDialog extends EscapableDialog implements ActionListener {
 	public void actionPerformed(ActionEvent e) {
 		if(e.getSource() instanceof JFileChooser) {
 			if(result == JFileChooser.APPROVE_OPTION) {
-				if(mode == Mode.SAVE_AS) {
+				if (mode == Mode.SAVE_AS) {
 					editor.setFile(fileChooser.getSelectedFile());
+					System.out.println(fileChooser.getSelectedFile());
 					write();
-				} else if(mode == Mode.OPEN) {
+				} else if (mode == Mode.OPEN) {
 					editor.setFile(fileChooser.getSelectedFile());
 					read();
+				} else {
+					System.err.println("File picker mode not recognized");
 				}
+			} else if(result == JFileChooser.ERROR_OPTION) {
+				System.err.println("File selection dialog failed");
 			} else {
 				System.out.println("File not saved. Location is " + editor.getFile());
 			}

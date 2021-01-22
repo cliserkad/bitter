@@ -32,8 +32,8 @@ public class MenuBar extends JMenuBar {
 		add(file);
 
 		final var editor = new JMenu("Editor");
-		file.add(new JMenuItem(new CloseTabAction()));
-		file.add(new JMenuItem(new NewTabAction()));
+		editor.add(new JMenuItem(new CloseTabAction()));
+		editor.add(new JMenuItem(new NewTabAction()));
 		add(editor);
 	}
 
@@ -116,7 +116,7 @@ public class MenuBar extends JMenuBar {
 		private static final long serialVersionUID = -5189937979427502507L;
 
 		GoToLineAction() {
-			super("Go To Line...");
+			super("Go To Line" + ELLIPSES);
 			putValue(ACCELERATOR_KEY, KeyStroke.getKeyStroke(KeyEvent.VK_G, KeyEvent.CTRL_DOWN_MASK));
 		}
 
@@ -148,7 +148,7 @@ public class MenuBar extends JMenuBar {
 		private static final long serialVersionUID = 3101786697029049708L;
 
 		ShowReplaceDialogAction() {
-			super("Find...");
+			super("Find" + ELLIPSES);
 			putValue(ACCELERATOR_KEY, KeyStroke.getKeyStroke(KeyEvent.VK_F, KeyEvent.CTRL_DOWN_MASK));
 		}
 
