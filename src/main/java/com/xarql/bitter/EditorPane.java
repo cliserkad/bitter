@@ -16,6 +16,7 @@ import org.fife.rsta.ui.search.ReplaceDialog;
 import org.fife.rsta.ui.search.SearchEvent;
 import org.fife.rsta.ui.search.SearchListener;
 import org.fife.ui.rsyntaxtextarea.RSyntaxTextArea;
+import org.fife.ui.rsyntaxtextarea.SyntaxScheme;
 import org.fife.ui.rtextarea.RTextScrollPane;
 import org.fife.ui.rtextarea.SearchEngine;
 import org.fife.ui.rtextarea.SearchResult;
@@ -61,21 +62,30 @@ public class EditorPane extends JPanel implements SearchListener {
 		else if(file.getName().endsWith(".kdl"))
 			setSyntax(KDL);
 		else
-			setSyntax(SMP);
+			resetSyntax();
 		return file;
 	}
 
+	public void resetSyntax() {
+		textArea.setSyntaxScheme(new SyntaxScheme(true));
+		textArea.setSyntaxEditingStyle(TXT);
+	}
+
 	public void setSyntax(String syntax) {
-		syntax = syntax.trim();
-		if(syntax.equalsIgnoreCase(SMP)) {
-			textArea.setSyntaxScheme(new SmpSyntaxScheme());
-			textArea.setSyntaxEditingStyle(SMP);
-		} else if(syntax.equalsIgnoreCase(KDL)){
-			textArea.setSyntaxScheme(new KdlSyntaxScheme());
-			textArea.setSyntaxEditingStyle(KDL);
-		} else {
-			textArea.setSyntaxScheme(null);
-			textArea.setSyntaxEditingStyle(null);
+		if(syntax == null) {
+			resetSyntax();
+		}
+		else {
+			syntax = syntax.trim();
+			if (syntax.equalsIgnoreCase(SMP)) {
+				textArea.setSyntaxScheme(new SmpSyntaxScheme());
+				textArea.setSyntaxEditingStyle(SMP);
+			} else if (syntax.equalsIgnoreCase(KDL)) {
+				textArea.setSyntaxScheme(new KdlSyntaxScheme());
+				textArea.setSyntaxEditingStyle(KDL);
+			} else {
+				resetSyntax();
+			}
 		}
 	}
 
