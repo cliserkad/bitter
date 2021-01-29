@@ -6,9 +6,9 @@ name: Test with Maven
 on:
   workflow_dispatch:
   push:
-    branches: [ main ]
+    branches: [ master ]
   pull_request:
-    branches: [ main ]
+    branches: [ master ]
 
 jobs:
   test:
@@ -19,7 +19,9 @@ jobs:
         uses: actions/setup-java@v1
         with:
           java-version: 14
+      - name: install settings.xml
+        uses: s4u/maven-settings-action@v2.1.1
+        with:
+          servers: '[{"id": "github", "username": "${{github.actor}}", "password": "${{secrets.github_token}}"}]'
       - name: mvn test
         run: mvn clean test --file pom.xml --no-transfer-progress
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
