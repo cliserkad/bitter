@@ -21,3 +21,5 @@ jobs:
           java-version: 14
       - name: mvn test
         run: mvn clean test --file pom.xml --no-transfer-progress
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
