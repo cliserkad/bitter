@@ -42,8 +42,7 @@ public class EditorPane extends JPanel implements SearchListener {
 
 		settings = new Settings();
 		textArea = ComponentFactory.textArea(settings);
-		textArea.setSyntaxScheme(new KdlSyntaxScheme());
-		textArea.setSyntaxEditingStyle("text/kdl");
+		resetSyntax();
 		add(new RTextScrollPane(textArea));
 
 		this.owner = owner;
