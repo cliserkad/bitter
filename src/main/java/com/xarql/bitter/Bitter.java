@@ -2,6 +2,7 @@ package com.xarql.bitter;
 
 import java.awt.BorderLayout;
 import java.awt.GridLayout;
+import java.io.File;
 import javax.swing.*;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
@@ -15,6 +16,9 @@ import org.fife.ui.rsyntaxtextarea.folding.FoldParserManager;
  */
 public class Bitter extends JFrame implements ChangeListener {
 	private static final long serialVersionUID = -7097067406931407761L;
+
+	public static final File BITTER_HOME = new File(System.getProperty("user.home"), "bitter");
+	public static final String NEW_TAB_TITLE = "new tab";
 
 	public final MenuBar menuBar;
 	public final JTabbedPane tabbedPane;
@@ -52,7 +56,7 @@ public class Bitter extends JFrame implements ChangeListener {
 		leftPane.add(tabbedPane);
 
 		final var initialTab = new EditorPane(this);
-		tabbedPane.add(initialTab, "document");
+		tabbedPane.add(initialTab, NEW_TAB_TITLE);
 		menuBar.editor = initialTab;
 
 		final var printStreamPane = new PrintStreamPane();

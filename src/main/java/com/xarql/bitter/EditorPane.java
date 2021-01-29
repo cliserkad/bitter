@@ -28,6 +28,7 @@ public class EditorPane extends JPanel implements SearchListener {
 	public static final String SMP = "text/smp";
 	public static final String TXT = "text/txt";
 
+	public final Bitter owner;
 	public final RSyntaxTextArea textArea;
 	public final ReplaceDialog replaceDialog;
 	public final FileDialog fileDialog;
@@ -35,7 +36,7 @@ public class EditorPane extends JPanel implements SearchListener {
 
 	private File file;
 
-	public EditorPane(final Frame owner) {
+	public EditorPane(final Bitter owner) {
 		setLayout(new BorderLayout());
 
 		settings = new Settings();
@@ -44,9 +45,15 @@ public class EditorPane extends JPanel implements SearchListener {
 		textArea.setSyntaxEditingStyle("text/kdl");
 		add(new RTextScrollPane(textArea));
 
+		this.owner = owner;
 		replaceDialog = new ReplaceDialog(owner, this);
 		fileDialog = new FileDialog(owner, this);
 		file = null;
+	}
+
+	public void updateTabName() {
+		if(owner != null)
+			owner.tabbedPane.setTitleAt(owner.tabbedPane.indexOfComponent(this), getFile().getName());
 	}
 
 	public File getFile() {

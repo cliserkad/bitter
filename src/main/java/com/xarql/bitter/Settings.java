@@ -11,7 +11,7 @@ import com.xarql.smp.PathMap;
 
 public class Settings {
 
-	public static final File SETTINGS_FILE = new File(System.getProperty("user.home"), "/bitter/settings.smp");
+	public static final File SETTINGS_FILE = new File(Bitter.BITTER_HOME, "settings.smp");
 	public static final Settings INITIAL = new Settings();
 
 	public static final boolean DEFAULT_WRAP_ENABLED = true;
