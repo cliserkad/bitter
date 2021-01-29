@@ -3,14 +3,11 @@ package com.xarql.bitter;
 import org.fife.rsta.ui.EscapableDialog;
 
 import javax.swing.*;
-import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
-
-import static com.xarql.bitter.Util.formatForFile;
 
 public class FileDialog extends EscapableDialog implements ActionListener {
 	public static final String SAVE_AS = "Save As";
@@ -34,9 +31,10 @@ public class FileDialog extends EscapableDialog implements ActionListener {
 		pack();
 	}
 
-	public void perform(Mode mode) {
+	public FileDialog perform(Mode mode) {
 		this.mode = mode;
 		setVisible(true);
+		return this;
 	}
 
 	@Override
@@ -73,12 +71,12 @@ public class FileDialog extends EscapableDialog implements ActionListener {
 		}
 	}
 
-	private void write() {
+	public void write() {
 		try {
 			editor.updateTabName();
-			editor.textArea.setText(formatForFile(editor.textArea.getText()));
-			Files.write(editor.getFile().toPath(), editor.textArea.getText().getBytes());
-			System.out.println("Wrote " + editor.textArea.getText().getBytes().length + " bytes to " + editor.getFile());
+			editor.formatText();
+			Files.write(editor.getFile().toPath(), editor.getText().getBytes());
+			System.out.println("Wrote " + editor.getText().getBytes().length + " bytes to " + editor.getFile());
 		} catch(IOException e) {
 			e.printStackTrace();
 		}
@@ -94,23 +92,13 @@ public class FileDialog extends EscapableDialog implements ActionListener {
 		}
 	}
 
-	private void read() {
+	public void read() {
 		try {
 			editor.updateTabName();
-			final String text = new String(Files.readAllBytes(editor.getFile().toPath()));
-			editor.textArea.setText(text);
-			System.out.println("Read " + editor.textArea.getText().getBytes().length + " bytes from " + editor.getFile());
+			editor.setText(new String(Files.readAllBytes(editor.getFile().toPath())));
+			System.out.println("Read " + editor.getText().getBytes().length + " bytes from " + editor.getFile());
 		} catch(IOException e) {
 			e.printStackTrace();
-		}
-	}
-
-	private void updateEditorFile() {
-		try {
-			editor.setFile(fileChooser.getSelectedFile());
-		} catch(Exception fileUpdateFail) {
-			System.err.println("Couldn't update editor's file");
-			fileUpdateFail.printStackTrace();
 		}
 	}
 
@@ -121,7 +109,7 @@ public class FileDialog extends EscapableDialog implements ActionListener {
 		}
 	}
 
-	public void execute() {
+	public FileDialog execute() {
 		if(result == JFileChooser.APPROVE_OPTION) {
 			editor.setFile(fileChooser.getSelectedFile());
 			if(mode == Mode.SAVE_AS || mode == Mode.SAVE)
@@ -137,6 +125,7 @@ public class FileDialog extends EscapableDialog implements ActionListener {
 		} else {
 			System.out.println("File not saved. Location is " + editor.getFile());
 		}
+		return this;
 	}
 
 	public enum Mode {

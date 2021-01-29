@@ -14,9 +14,9 @@ public class Util {
 		for(var i = 0; i < s.length(); i++) {
 			if(s.charAt(i) == NEWLINE) {
 				builder.append("\\n");
-			} else if(s.charAt(i) == '\t') {
+			} else if(s.charAt(i) == TAB) {
 				builder.append("\\t");
-			} else if(s.charAt(i) == '\"') {
+			} else if(s.charAt(i) == QUOTE) {
 				builder.append("\\\"");
 			} else {
 				builder.append(s.charAt(i));
@@ -30,26 +30,24 @@ public class Util {
 		var builder = new StringBuilder();
 		builder.ensureCapacity(s.length() + 1);
 		boolean pastNewline = false;
+		boolean pastMeaningfulChar = false;
 		for(int i = s.length() - 1; i >= 0; i--) {
 			if(s.charAt(i) == NEWLINE) {
-				if(i > 1 && (s.charAt(i - 1) != NEWLINE || s.charAt(i - 2) != NEWLINE)) {
-					builder.append(NEWLINE);
-				}
 				pastNewline = true;
-			} else if(s.charAt(i) == SPACE && i > 0 && s.charAt(i - 1) == SPACE) {
-				builder.append(TAB);
-				i--;
-			} else {
-				if(pastNewline && Character.isWhitespace(s.charAt(i))) {
-					// do nothing
-				} else {
+				if(pastMeaningfulChar && (s.charAt(i - 1) != NEWLINE || s.charAt(i - 2) != NEWLINE))
+					builder.append(NEWLINE);
+			} else if(!Character.isWhitespace(s.charAt(i)) || !pastNewline) {
+				if(pastMeaningfulChar && s.charAt(i) == SPACE && s.charAt(i - 1) == SPACE) {
+					builder.append(TAB);
+					i--;
+				} else
 					builder.append(s.charAt(i));
-					pastNewline = false;
-				}
+				pastMeaningfulChar = true;
+				pastNewline = false;
 			}
 		}
 		builder.reverse();
-		if(s.charAt(s.length() - 1) != NEWLINE)
+		if(builder.charAt(builder.length() - 1) != NEWLINE)
 			builder.append(NEWLINE);
 		return builder.toString();
 	}

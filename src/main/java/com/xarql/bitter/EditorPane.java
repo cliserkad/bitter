@@ -1,6 +1,7 @@
 package com.xarql.bitter;
 
 import static com.xarql.bitter.Util.asLiteral;
+import static com.xarql.bitter.Util.formatForFile;
 
 import java.awt.BorderLayout;
 import java.awt.Frame;
@@ -51,9 +52,10 @@ public class EditorPane extends JPanel implements SearchListener {
 		file = null;
 	}
 
-	public void updateTabName() {
+	public EditorPane updateTabName() {
 		if(owner != null)
 			owner.tabbedPane.setTitleAt(owner.tabbedPane.indexOfComponent(this), getFile().getName());
+		return this;
 	}
 
 	public File getFile() {
@@ -71,6 +73,20 @@ public class EditorPane extends JPanel implements SearchListener {
 		else
 			resetSyntax();
 		return file;
+	}
+
+	public String getText() {
+		return textArea.getText();
+	}
+
+	public EditorPane setText(final String text) {
+		textArea.setText(formatForFile(text));
+		return this;
+	}
+
+	public EditorPane formatText() {
+		setText(getText());
+		return this;
 	}
 
 	public void resetSyntax() {
