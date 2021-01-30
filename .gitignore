@@ -6,3 +6,5 @@
 **/.settings
 .project
 /src/main/java/com/xarql/kdl/antlr/*
+change.log
+changes.log
