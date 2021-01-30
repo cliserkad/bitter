@@ -1,5 +1,6 @@
 package com.xarql.bitter;
 
+import java.awt.*;
 import java.io.OutputStream;
 import java.io.PrintStream;
 import org.fife.ui.rtextarea.RTextArea;

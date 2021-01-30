@@ -1,0 +1,35 @@
+# This workflow will test this Java project with Maven
+# For more information see: https://help.github.com/actions/language-and-framework-guides/building-and-testing-java-with-maven
+
+name: test
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [ master ]
+  pull_request:
+    branches: [ master ]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Set up Java 14
+        uses: actions/setup-java@v1
+        with:
+          java-version: 14
+      - name: install settings.xml
+        uses: s4u/maven-settings-action@v2.3.0
+        with:
+          servers: '[{"id": "github-cliserkad-smp", "username": "${{github.actor}}", "password": "${{secrets.github_token}}"}]'
+      - name: mvn test
+        run: mvn clean test --file pom.xml --no-transfer-progress
+      - name: show changes
+        run: bash ./changes.sh
+      - name: send change.log to Discord
+        uses: sinshutu/upload-to-discord@v2.0.0
+        env:
+          DISCORD_WEBHOOK: ${{ secrets.DISCORD_WEBHOOK }}
+        with:
+          args: change.log
