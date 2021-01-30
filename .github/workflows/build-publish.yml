@@ -36,13 +36,10 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          tag_name: auto_release
           release_name: auto_${{ github.sha }}
           body: run git log if you're interested, the gist is that this one is better than the last
           draft: false
           prerelease: false
-      - run: cd /home/runner/work/bitter
-      - run: ls -R
       - name: attach jar
         id: attach_jar
         uses: actions/upload-release-asset@v1
@@ -50,6 +47,6 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: target/bitter-1-jar-with-dependencies.jar
+          asset_path: /home/runner/.m2/repository/com/xarql/bitter/1/bitter-1-jar-with-dependencies.jar
           asset_name: bitter.jar
           asset_content_type: application/java-archive
