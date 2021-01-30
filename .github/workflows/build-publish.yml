@@ -36,11 +36,13 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          tag_name: ${{ github.ref }}
-          release_name: release ${{ github.ref }}
+          tag_name: tag_${{ github.ref }}
+          release_name: release_${{ github.sha }}
           body: run git log if you're interested, the gist is that this one is better than the last
           draft: false
           prerelease: false
+      - name: show output dir
+        run: ls target
       - name: attach jar
         id: attach_jar
         uses: actions/upload-release-asset@v1
@@ -48,6 +50,6 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: ./target/bitter-1-jar-with-dependencies.jar
+          asset_path: target/bitter-1-jar-with-dependencies.jar
           asset_name: bitter.jar
           asset_content_type: application/java-archive
