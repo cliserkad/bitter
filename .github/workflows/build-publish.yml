@@ -25,6 +25,8 @@ jobs:
           servers: '[{"id": "github-cliserkad-smp", "username": "${{github.actor}}", "password": "${{secrets.github_token}}"}]'
       - name: mvn install
         run: mvn clean install --file pom.xml --no-transfer-progress
+      - name: show changes
+        run: ./changes.sh
       - name: create release
         id: create_release
         uses: actions/create-release@v1
@@ -33,7 +35,7 @@ jobs:
         with:
           tag_name: auto_tag_${{ github.sha }}
           release_name: auto_release_${{ github.sha }}
-          body: run git log if you're interested, the gist is that this one is better than the last
+          body: ${{ env.CHANGES }}
           draft: false
           prerelease: false
       - name: attach jar
