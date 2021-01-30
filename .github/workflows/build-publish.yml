@@ -36,13 +36,15 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          tag_name: tag_${{ github.ref }}
-          release_name: release_${{ github.sha }}
+          tag_name: auto_release
+          release_name: auto_${{ github.sha }}
           body: run git log if you're interested, the gist is that this one is better than the last
           draft: false
           prerelease: false
-      - name: show output dir
-        run: ls target
+      - name: show output
+        run: |
+        pwd
+        ls -r
       - name: attach jar
         id: attach_jar
         uses: actions/upload-release-asset@v1
