@@ -22,6 +22,6 @@ jobs:
       - name: install settings.xml
         uses: s4u/maven-settings-action@v2.3.0
         with:
-          servers: '[{"id": "github", "username": "${{github.actor}}", "password": "${{secrets.github_token}}"}]'
+          servers: '[{"id": "github-cliserkad-smp", "username": "${{github.actor}}", "password": "${{secrets.github_token}}"}]'
       - name: mvn test
         run: mvn clean test --file pom.xml --no-transfer-progress
