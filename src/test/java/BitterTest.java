@@ -1,4 +1,4 @@
-package com.xarql.bitter;
+package test.java;
 
 import static org.junit.Assert.assertTrue;
 
