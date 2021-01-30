@@ -36,7 +36,8 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          release_name: auto_${{ github.sha }}
+          tag_name: auto_tag_${{ github.sha }}
+          release_name: auto_release_${{ github.sha }}
           body: run git log if you're interested, the gist is that this one is better than the last
           draft: false
           prerelease: false
