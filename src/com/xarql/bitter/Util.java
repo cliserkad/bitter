@@ -47,7 +47,7 @@ public class Util {
 			}
 		}
 		builder.reverse();
-		if(builder.charAt(builder.length() - 1) != NEWLINE)
+		if(builder.length() > 0 && builder.charAt(builder.length() - 1) != NEWLINE)
 			builder.append(NEWLINE);
 		return builder.toString();
 	}

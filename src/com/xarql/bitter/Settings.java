@@ -22,6 +22,9 @@ public class Settings {
 	public static final int DEFAULT_HEIGHT = 480;
 	public static final int DEFAULT_TAB_SIZE = 2;
 
+	public static final String DEFAULT_NEW_TAB_TITLE = "new tab";
+	public static final File DEFAULT_DEFAULT_FILE = new File(Bitter.BITTER_HOME, "tmp.txt");
+
 	public static final Color DEFAULT_BACKGROUND = new Color(40, 42, 54);
 	public static final Color DEFAULT_FOREGROUND = new Color(248, 248, 242);
 	public static final Color DEFAULT_CURRENT_LINE = new Color(68, 71, 90);
@@ -38,6 +41,9 @@ public class Settings {
 	public final int tabSize;
 	public final int columns;
 	public final int rows;
+
+	public final String newTabTitle;
+	public final File defaultFile;
 
 	public final Color background;
 	public final Color foreground;
@@ -56,6 +62,13 @@ public class Settings {
 		tabSize = data.getIntOrDefault("tabSize", DEFAULT_TAB_SIZE);
 		columns = data.getIntOrDefault("columns");
 		rows = data.getIntOrDefault("rows");
+
+		newTabTitle = data.getStringOrDefault("newTabTitle", DEFAULT_NEW_TAB_TITLE);
+		final String filePath = data.getStringOrDefault("defaultFile");
+		if(filePath.equals(ParseData.DEFAULT_STRING))
+			defaultFile = DEFAULT_DEFAULT_FILE;
+		else
+			defaultFile = new File(filePath);
 
 		background = color("background", DEFAULT_BACKGROUND);
 		foreground = color("foreground", DEFAULT_FOREGROUND);

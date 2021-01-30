@@ -18,7 +18,6 @@ public class Bitter extends JFrame implements ChangeListener {
 	private static final long serialVersionUID = -7097067406931407761L;
 
 	public static final File BITTER_HOME = new File(System.getProperty("user.home"), "bitter");
-	public static final String NEW_TAB_TITLE = "new tab";
 
 	public final MenuBar menuBar;
 	public final JTabbedPane tabbedPane;
@@ -56,7 +55,7 @@ public class Bitter extends JFrame implements ChangeListener {
 		leftPane.add(tabbedPane);
 
 		final var initialTab = new EditorPane(this);
-		tabbedPane.add(initialTab, NEW_TAB_TITLE);
+		tabbedPane.add(initialTab, Settings.INITIAL.newTabTitle);
 		menuBar.editor = initialTab;
 
 		final var printStreamPane = new PrintStreamPane();

@@ -26,7 +26,8 @@ public class FileDialog extends EscapableDialog implements ActionListener {
 		fileChooser.setFileHidingEnabled(!editor.settings.filesHidden);
 		fileChooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
 		fileChooser.setMultiSelectionEnabled(false);
-		fileChooser.setSelectedFile(new File(Bitter.BITTER_HOME, "tmp.txt"));
+		fileChooser.setSelectedFile(editor.settings.defaultFile);
+		System.out.println(editor.settings.defaultFile);
 		result = -1;
 		pack();
 	}

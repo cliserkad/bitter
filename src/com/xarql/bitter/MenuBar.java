@@ -45,7 +45,7 @@ public class MenuBar extends JMenuBar {
 
 		@Override
 		public void actionPerformed(ActionEvent e) {
-			owner.tabbedPane.addTab(Bitter.NEW_TAB_TITLE, new EditorPane(owner));
+			owner.tabbedPane.addTab(new Settings().newTabTitle, new EditorPane(owner));
 		}
 	}
 
@@ -59,7 +59,7 @@ public class MenuBar extends JMenuBar {
 		public void actionPerformed(ActionEvent e) {
 			owner.tabbedPane.remove(owner.tabbedPane.getSelectedComponent());
 			if(owner.tabbedPane.getTabRunCount() == 0)
-				owner.tabbedPane.addTab(Bitter.NEW_TAB_TITLE, new EditorPane(owner));
+				owner.tabbedPane.addTab(new Settings().newTabTitle, new EditorPane(owner));
 		}
 	}
 
