@@ -26,10 +26,7 @@ jobs:
       - name: mvn install
         run: mvn clean install --file pom.xml --no-transfer-progress
       - name: show changes
-        run: |
-          printf "Aggregating git commit messages:\n\n"
-          export CHANGES=$(git log --pretty=format:"%s" $(git describe --tags --abbrev=0 @^)..@ --no-merges | sed -e :1 -e 's/\([.?!]\)[[:blank:]]\{1,\}\([^[:blank:]]\)/\1\n\2/;t1')
-          printenv CHANGES
+        run: bash ./changes.sh
       - name: create release
         id: create_release
         uses: actions/create-release@v1
