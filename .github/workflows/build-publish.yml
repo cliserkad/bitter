@@ -41,10 +41,8 @@ jobs:
           body: run git log if you're interested, the gist is that this one is better than the last
           draft: false
           prerelease: false
-      - name: show output
-        run: |
-        pwd
-        ls -r
+      - run: pwd
+      - run: ls -R
       - name: attach jar
         id: attach_jar
         uses: actions/upload-release-asset@v1
