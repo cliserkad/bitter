@@ -45,7 +45,9 @@ public class MenuBar extends JMenuBar {
 
 		@Override
 		public void actionPerformed(ActionEvent e) {
-			owner.tabbedPane.addTab(new Settings().newTabTitle, new EditorPane(owner));
+			final EditorPane editorPane = new EditorPane(owner);
+			owner.tabbedPane.addTab(new Settings().newTabTitle, editorPane);
+			owner.tabbedPane.setSelectedComponent(editorPane);
 		}
 	}
 

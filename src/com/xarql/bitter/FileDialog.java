@@ -27,7 +27,6 @@ public class FileDialog extends EscapableDialog implements ActionListener {
 		fileChooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
 		fileChooser.setMultiSelectionEnabled(false);
 		fileChooser.setSelectedFile(editor.settings.defaultFile);
-		System.out.println(editor.settings.defaultFile);
 		result = -1;
 		pack();
 	}

@@ -6,6 +6,7 @@ import static com.xarql.bitter.Util.formatForFile;
 import java.awt.BorderLayout;
 import java.awt.Frame;
 import java.io.File;
+import java.util.Objects;
 import javax.swing.Action;
 import javax.swing.ButtonGroup;
 import javax.swing.JMenu;
@@ -178,6 +179,22 @@ public class EditorPane extends JPanel implements SearchListener {
 		}
 
 		System.out.println(text);
+	}
+
+	@Override
+	public boolean equals(Object object) {
+		if(this == object)
+			return true;
+		else if(object instanceof EditorPane) {
+			EditorPane that = (EditorPane) object;
+			return that.owner == owner && that.textArea == textArea;
+		} else
+			return false;
+	}
+
+	@Override
+	public int hashCode() {
+		return Objects.hash(owner, textArea);
 	}
 
 }

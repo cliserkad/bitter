@@ -1,7 +1,6 @@
 package com.xarql.bitter;
 
-import java.awt.BorderLayout;
-import java.awt.GridLayout;
+import java.awt.*;
 import java.io.File;
 import javax.swing.*;
 import javax.swing.event.ChangeEvent;
@@ -9,7 +8,6 @@ import javax.swing.event.ChangeListener;
 
 import org.fife.ui.rsyntaxtextarea.AbstractTokenMakerFactory;
 import org.fife.ui.rsyntaxtextarea.TokenMakerFactory;
-import org.fife.ui.rsyntaxtextarea.folding.FoldParserManager;
 
 /**
  * An epic text editor
@@ -26,10 +24,16 @@ public class Bitter extends JFrame implements ChangeListener {
 		SwingUtilities.invokeLater(() -> {
 			try {
 				UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
-			} catch (final Exception e) {
+			} catch(final Exception e) {
 				e.printStackTrace();
 			}
-			new Bitter().setVisible(true);
+			Bitter instance = new Bitter();
+			instance.setVisible(true);
+			try {
+				instance.setIconImage(Toolkit.getDefaultToolkit().getImage(instance.getClass().getResource("/icon.png")));
+			} catch(Exception e) {
+				e.printStackTrace();
+			}
 		});
 	}
 
