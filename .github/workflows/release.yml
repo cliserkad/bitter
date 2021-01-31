@@ -44,3 +44,12 @@ jobs:
           asset_path: /home/runner/.m2/repository/com/xarql/bitter/1/bitter-1-jar-with-dependencies.jar
           asset_name: bitter.jar
           asset_content_type: application/java-archive
+      - name: attach windows install script
+        id: attach_bat
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: src/main/resources/install/windows/installer.bat
+          asset_name: windows_installer.bat
