@@ -53,3 +53,4 @@ jobs:
           upload_url: ${{ steps.create_release.outputs.upload_url }}
           asset_path: src/main/resources/install/windows/installer.bat
           asset_name: windows_installer.bat
+          asset_content_type: application/bat
