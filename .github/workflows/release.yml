@@ -45,12 +45,22 @@ jobs:
           asset_name: bitter.jar
           asset_content_type: application/java-archive
       - name: attach windows install script
-        id: attach_bat
+        id: attach_installer
         uses: actions/upload-release-asset@v1
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: src/main/resources/install/windows/installer.bat
-          asset_name: windows_installer.bat
-          asset_content_type: application/bat
+          asset_path: src/main/resources/windows/installer.cmd
+          asset_name: windows_installer.cmd
+          asset_content_type: application/cmd
+      - name: attach windows launch script
+        id: attach_launcher
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: src/main/resources/windows/bitter.cmd
+          asset_name: bitter.cmd
+          asset_content_type: application/cmd
