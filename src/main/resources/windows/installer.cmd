@@ -14,7 +14,12 @@ powershell -Command "(New-Object Net.WebClient).DownloadFile('https://github.com
 del %repo-loc% /F /Q
 git clone https://github.com/cliserkad/bitter
 
-:: make shortcut and run
+:: add to start menu
+mklink "%AppData%\Microsoft\Windows\Start Menu\Programs" %jar-loc%
+
+:: add to desktop
 cd %install-dir%
 mklink "%HOMEPATH%\Desktop\Bitter" %jar-loc%
-powershell -Command "java -jar %jar-loc%"
+
+:: run
+powershell -Command "javaw -jar %jar-loc%"

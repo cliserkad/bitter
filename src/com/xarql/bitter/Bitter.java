@@ -34,6 +34,8 @@ public class Bitter extends JFrame implements ChangeListener {
 			} catch(Exception e) {
 				e.printStackTrace();
 			}
+			for(String s : args)
+				System.out.println(s);
 		});
 	}
 
