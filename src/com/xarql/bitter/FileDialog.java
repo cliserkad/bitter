@@ -12,6 +12,7 @@ import java.nio.file.Files;
 public class FileDialog extends EscapableDialog implements ActionListener {
 	public static final String SAVE_AS = "Save As";
 	public static final String OPEN = "Open";
+	public static final String DEFAULT_FILE_TYPE = ".txt";
 
 	public final JFileChooser fileChooser;
 	public final EditorPane editor;
@@ -75,6 +76,8 @@ public class FileDialog extends EscapableDialog implements ActionListener {
 		try {
 			editor.updateTabName();
 			editor.formatText();
+			if(!editor.getFile().getName().contains("."))
+				editor.setFile(new File(editor.getFile().getParentFile(), editor.getFile().getName() + DEFAULT_FILE_TYPE));
 			Files.write(editor.getFile().toPath(), editor.getText().getBytes());
 			System.out.println("Wrote " + editor.getText().getBytes().length + " bytes to " + editor.getFile());
 		} catch(IOException e) {
